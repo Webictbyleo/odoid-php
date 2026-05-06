@@ -22,7 +22,7 @@ final class OdoIDGenerator
     /**
      * @param  string   $namespace  Logical partition key (default "default").
      * @param  int      $length     OdoID length: 6 (default), 7, or 8.
-     * @param  int|null $epoch      Millisecond epoch origin. Defaults to now.
+     * @param  int      $epoch      Millisecond epoch origin (default 0).
      *
      * @throws UnsupportedLengthException
      */
