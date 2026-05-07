@@ -18,6 +18,7 @@ final class OdoIDGenerator
 
     private int $sequence = 0;
     private int $lastTick = -1;
+    private int $salt;
 
     /**
      * @param  string   $namespace  Logical partition key (default "default").
@@ -33,6 +34,7 @@ final class OdoIDGenerator
     ) {
         OdoId::assertLength($length);
         $this->capacity = Charsets::MAX[$length];
+        $this->salt = random_int(0, 0xFFFFFFFF);
     }
 
     private function nowMs(): int
@@ -69,7 +71,7 @@ final class OdoIDGenerator
             $this->lastTick = $tick;
         }
 
-        $seed = $this->fnv1a32($this->namespace . '|' . $tick);
+        $seed = $this->fnv1a32($this->namespace . '|' . $this->salt . '|' . $tick);
         $seed ^= ($seed << 13) & 0xFFFFFFFF;
         $seed ^= ($seed >> 7);
         $seed ^= ($seed << 17) & 0xFFFFFFFF;
