@@ -29,6 +29,7 @@ final class PerformanceTest extends TestCase
             $fn();
         }
         $avgMs = (hrtime(true) - $start) / 1_000_000 / self::ITERATIONS;
+        fwrite(STDOUT, sprintf("RESULT|php|%s|%.6f\n", $label, $avgMs));
 
         $this->assertLessThanOrEqual(
             self::LIMIT_MS,
@@ -88,6 +89,14 @@ final class PerformanceTest extends TestCase
         $i   = 0;
         $this->assertAvgMs('decode/8', static function () use ($ids, &$i) {
             OdoId::decode($ids[$i++ % count($ids)]);
+        });
+    }
+
+    public function testGeneratorNextAveragesBelowLimit(): void
+    {
+        $gen = new \Webictbyleo\OdoID\OdoIDGenerator('default', 6);
+        $this->assertAvgMs('generate/6', static function () use ($gen) {
+            $gen->next();
         });
     }
 }
